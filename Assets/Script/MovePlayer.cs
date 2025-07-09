@@ -1,3 +1,4 @@
+// MovePlayer.cs (versión simplificada)
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,6 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.touchCount > 0)
@@ -31,8 +31,7 @@ public class MovePlayer : MonoBehaviour
             Touch touch = Input.GetTouch(0); 
             if (touchPointerUI != null)
             {
-                touchPointerUI.gameObject.SetActive(true); // Muestra el puntero
-                // Las posiciones de toque están en píxeles de pantalla, como los RectTransform de la UI
+                touchPointerUI.gameObject.SetActive(true);
                 touchPointerUI.rectTransform.position = touch.position;
             }
             Ray ray = _cam.ScreenPointToRay(touch.position); 
@@ -45,38 +44,32 @@ public class MovePlayer : MonoBehaviour
                     transform.position = Vector3.MoveTowards(transform.position, currentPosition, moveSpeed * Time.deltaTime);
                     if (touchPointerUI != null && movingPointerSprite != null)
                     {
-                        touchPointerUI.sprite = movingPointerSprite; // Cambia el sprite si hay movimiento
+                        touchPointerUI.sprite = movingPointerSprite; 
                     }
                     
                 }
                 else
                 {
-                    // Si hay hit pero no movimiento (o el objeto ya está en la posición), usa el sprite por defecto
                     if (touchPointerUI != null && defaultPointerSprite != null)
                     {
                         touchPointerUI.sprite = defaultPointerSprite;
                     }
                 }
-                    
             }
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
                 if (touchPointerUI != null)
                 {
-                    touchPointerUI.gameObject.SetActive(false); // Oculta el puntero cuando se levanta el dedo
+                    touchPointerUI.gameObject.SetActive(false);
                 }
             }
-               
-            
-            
         }
-        else // Si no hay toques en la pantalla
+        else
         {
             if (touchPointerUI != null)
             {
-                touchPointerUI.gameObject.SetActive(false); // Oculta el puntero si no hay toques activos
+                touchPointerUI.gameObject.SetActive(false); 
             }
         }
     }
-    
 }
