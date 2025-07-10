@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneNameToLoad: MiniPlay1
+  loadingSceneName: LoadScene
   activatingTag: Player
 --- !u!1 &272874948
 GameObject:
