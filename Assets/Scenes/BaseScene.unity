@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 132411080}
   - component: {fileID: 132411079}
   - component: {fileID: 132411083}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -253,8 +253,8 @@ Transform:
   m_GameObject: {fileID: 132411078}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.72, y: 2.56, z: 14.65}
-  m_LocalScale: {x: 5.3045, y: 5.3045, z: 5.3045}
+  m_LocalPosition: {x: 13.99, y: 3.32, z: 14.65}
+  m_LocalScale: {x: 6.3563, y: 6.3563, z: 6.3563}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneNameToLoad: MiniPlay1
+  loadingSceneName: LoadScene
   activatingTag: Player
 --- !u!1 &272874948
 GameObject:
@@ -723,7 +724,7 @@ GameObject:
   - component: {fileID: 525673520}
   m_Layer: 6
   m_Name: MariaC
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
