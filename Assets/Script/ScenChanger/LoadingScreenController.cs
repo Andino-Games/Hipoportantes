@@ -14,11 +14,11 @@ public class LoadingScreenController : MonoBehaviour
     {
         
         StartCoroutine(LoadSceneAsync());
+        
     }
 
     IEnumerator LoadSceneAsync()
     {
-        
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneData.SceneToLoad);
         
         operation.allowSceneActivation = false;
