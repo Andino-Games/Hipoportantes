@@ -1,5 +1,3 @@
-// MovePlayer.cs (versión simplificada)
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -7,6 +7,7 @@ TagManager:
   - Arrow
   - ArrowLeft
   - ArrowRight
+  - End
   layers:
   - Default
   - TransparentFX

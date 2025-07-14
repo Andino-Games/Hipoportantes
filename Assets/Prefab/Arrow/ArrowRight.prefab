@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2569794376930420238}
   - component: {fileID: 5119540310232013929}
   m_Layer: 0
-  m_Name: ArrowLeft
+  m_Name: ArrowRight
   m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatTempo: 30
-  hasStarted: 0
+  NoMoreArrows: 0
 --- !u!61 &5119540310232013929
 BoxCollider2D:
   m_ObjectHideFlags: 0

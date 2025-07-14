@@ -8,30 +8,20 @@ namespace Script.Dance
         public bool canTouch,NoTouch;
         public string arrow;
         private GameObject _arrow;
+        public Collider2D col;
 
         public void Update()
         {
-            if(canTouch && Input.touchCount > 0)
+            if(canTouch)
             {
-                Touch touch = Input.GetTouch(0);
-                NoTouch = true;
-                if (touch.phase == TouchPhase.Began)
+                if (_arrow != null)
                 {
-                    
-                    if (_arrow != null)
-                    {
-                        DanceController.Instance.GoodNote();
-                        Destroy(_arrow);
-                        _arrow = null;
-                    }
-
-                   
-                    canTouch = false;
+                    DanceController.Instance.GoodNote();
+                    Destroy(_arrow);
+                    _arrow = null;
                 }
-            }
-            else
-            {
-                NoTouch = false;
+              
+                canTouch = false;
             }
         }
 
@@ -49,15 +39,21 @@ namespace Script.Dance
         {
             if (other.gameObject == _arrow)
             {
-                if (canTouch)
-                {
-                    DanceController.Instance.MissedNote();
-                    
-                }
-                canTouch = false;
+                 canTouch = false;
                 _arrow = null;
                 
             }
+        }
+
+        public void ActivateColliders()
+        {
+            col.enabled = true;
+        }
+
+        public void DesactivateCollider()
+        {
+            col.enabled = false;
+            
         }
     }
 }
