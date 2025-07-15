@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MovePlayer : MonoBehaviour
 {
@@ -27,6 +28,15 @@ public class MovePlayer : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0); 
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            {
+                if (touchPointerUI != null)
+                {
+                    touchPointerUI.gameObject.SetActive(false);
+                    
+                }
+                return; 
+            }
             if (touchPointerUI != null)
             {
                 touchPointerUI.gameObject.SetActive(true);
