@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using Random = UnityEngine.Random;
 
 public class DanceController : MonoBehaviour
@@ -12,6 +14,7 @@ public class DanceController : MonoBehaviour
     
     [SerializeField] private List<GameObject> arrows = new List<GameObject>();
     [SerializeField] private List<GameObject> spriteGoodNotes = new List<GameObject>();
+    [SerializeField] private List<PlayableDirector> wrongNotes = new List<PlayableDirector>();
     [SerializeField] private List<Transform> positionNotes = new List<Transform>();
     
     [SerializeField] private Transform leftSpawnPoint;
@@ -21,11 +24,11 @@ public class DanceController : MonoBehaviour
     public AudioSource sound;
     public bool isPlaying;
     public TMP_Text scoreText, finalScore;
-    private int _score = 0, _noteCount = 0;
+    private int _score = 0, _noteCount = 0, _noteWrongCount = 0;
     
     [Header("Game Speed Settings")]
     public float initialBeat = 30f; 
-    public float speedIncreaseAmount = 0.1f; 
+    public float speedIncreaseAmount = 0.1f,speedDecraseAmount = 0.1f; 
     public float timeBetweenSpeedIncreases = 10f;
     
     [Header("Spawn Settings")]
@@ -39,10 +42,14 @@ public class DanceController : MonoBehaviour
     [SerializeField] private PlayableDirector finalScreen;
     [SerializeField] private GameObject[] finalState;
 
+    private bool activateTime;
+    private SignalReceiver _signalReceiver;
+    private int indexwrongNotes, wrongNote;
+
     private void Awake()
     {
         Instance = this;
-        
+        _signalReceiver = GetComponent<SignalReceiver>();
         currentTempo = initialBeat / 60f;
         timer = 0f;
         spawnTimer = 0f;
@@ -63,7 +70,15 @@ public class DanceController : MonoBehaviour
 
         if (spawnTimer >= initialSpawnInterval) 
         {
-            SpawnArrowsAtRandomPoints(); 
+            if (Random.Range(0, 2) == 0)
+            {
+                SpawnLeftArrow();
+              
+            }
+            else
+            {
+                SpawnRightArrow();
+            }
             spawnTimer = 0f; 
         }
 
@@ -75,6 +90,7 @@ public class DanceController : MonoBehaviour
 
         if (!sound.isPlaying && isPlaying)
         {
+            MenuManager.Instance.AddScore(_score);
             GetComponent<Collider2D>().enabled = false;
             finalScreen.Play();
             finalScore.text = "Your Score: " + _score.ToString();
@@ -89,26 +105,25 @@ public class DanceController : MonoBehaviour
         
         if (initialSpawnInterval > minSpawnInterval)
         {
-            initialSpawnInterval -= 0.1f; 
+            initialSpawnInterval -= speedDecraseAmount; 
         }
 
       
     }
-    void SpawnArrowsAtRandomPoints()
-    {
-        
-        if (arrows.Count >= 2)
-        {
-            float randomYOffsetLeft =Random.Range(leftMin, leftMax);
-            Vector3 spawnPositionLeft = leftSpawnPoint.position + new Vector3(0, randomYOffsetLeft, 0);
-            Instantiate(arrows[0], spawnPositionLeft, Quaternion.identity);
 
-            
-            float randomYOffsetRight = Random.Range(rightMin, rightMax);
-            Vector3 spawnPositionRight = rightSpawnPoint.position + new Vector3(0, randomYOffsetRight, 0);
-            Instantiate(arrows[1], spawnPositionRight, Quaternion.identity);
-        }
-        
+    void SpawnRightArrow()
+    {
+        float randomYOffsetRight = Random.Range(rightMin, rightMax);
+        Vector3 spawnPositionRight = rightSpawnPoint.position + new Vector3(0, randomYOffsetRight, 0);
+        Instantiate(arrows[1], spawnPositionRight, Quaternion.identity);
+      
+    }
+
+    public void SpawnLeftArrow()
+    {
+        float randomYOffsetLeft = Random.Range(leftMin, leftMax);
+        Vector3 spawnPositionLeft = leftSpawnPoint.position + new Vector3(0, randomYOffsetLeft, 0);
+        Instantiate(arrows[0], spawnPositionLeft, Quaternion.identity); 
     }
 
     public void GoodNote()
@@ -131,13 +146,29 @@ public class DanceController : MonoBehaviour
 
     public void MissedNote()
     {
+        _noteWrongCount++;
+         indexwrongNotes = Random.Range(5, 10);
+         wrongNote = Random.Range(0, wrongNotes.Count);
+
+        if (_noteWrongCount >= indexwrongNotes)
+        {
+            wrongNotes[wrongNote].Play();
+            _noteWrongCount = 0;
+            Time.timeScale = 0f;
+            
+            
+        }
         Debug.Log("Error en la note");
-        _score = 0;
-        _noteCount = 0;
-        scoreText.text = "Score: " + _score.ToString();
+        
        
     }
 
+    public void StopTimeline()
+    {
+        wrongNotes[wrongNote].Stop();
+        Time.timeScale = 1f;
+
+    }
     public void state()
     {
         if (_score >= 50) 
