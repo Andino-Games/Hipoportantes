@@ -58,15 +58,15 @@ public class MenuManager : MonoBehaviour
             scoreText = null;
         }
 
-        // 2. Buscamos el objeto para el menú de pausa.
+        
         GameObject menuShowObject = GameObject.FindWithTag("PauseMenu");
         if (menuShowObject != null)
         {
             menuShow = menuShowObject;
-            // Nos aseguramos de que el menú de pausa siempre comience cerrado.
+            
             menuShow.SetActive(false); 
-            IsPress = false; // Reseteamos el estado del botón de pausa.
-            Time.timeScale = 1f; // Nos aseguramos que el tiempo corra normalmente.
+            IsPress = false; 
+            Time.timeScale = 1f; 
         }
         else
         {
@@ -98,7 +98,7 @@ public class MenuManager : MonoBehaviour
 
     public void OpenMenu()
     {
-        // El null-check es una buena práctica por si esta función se llama en una escena sin menú.
+        
         if (menuShow != null)
         {
             menuShow.SetActive(true);

@@ -53,7 +53,7 @@ public class DanceController : MonoBehaviour
         currentTempo = initialBeat / 60f;
         timer = 0f;
         spawnTimer = 0f;
-        scoreText.text = "Score: " + _score.ToString();
+        scoreText.text = _score.ToString();
     }
 
     void Update()
@@ -130,7 +130,7 @@ public class DanceController : MonoBehaviour
     {
         _noteCount++;
         _score++;
-        scoreText.text = "Score: " + _score.ToString();
+        scoreText.text = _score.ToString();
 
         int notes = Random.Range(5, 10);
         int goodNotes = Random.Range(0, spriteGoodNotes.Count);
