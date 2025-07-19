@@ -17,12 +17,14 @@ public class MinigameTrigger : MonoBehaviour
     {
         if (other.CompareTag(activatingTag))
         {
+            AudioManager.Instance.PlaySFX("Aseguren");
             // 1. Guarda el nombre de la escena del minijuego en nuestro script estático.
             SceneData.SceneToLoad = sceneNameToLoad;
 
             // 2. Carga la escena de la pantalla de carga.
             Debug.Log("Iniciando carga para: " + sceneNameToLoad);
             SceneManager.LoadScene(loadingSceneName);
+            AudioManager.Instance.PlaySFX("Cancion");
         }
     }
 }

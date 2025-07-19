@@ -19,6 +19,7 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
+        AudioManager.Instance.PlayMusic("HipoHipo");
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
