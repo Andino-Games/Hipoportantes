@@ -10,7 +10,7 @@ public class MenuManager : MonoBehaviour
     private int currentScore = 0;
 
     [Header("UI References")]
-    public TMP_Text scoreText; 
+    public TMP_Text scoreText;
     public GameObject menuShow;
     public SpriteRenderer pauseButton;
 
@@ -19,7 +19,6 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        AudioManager.Instance.PlayMusic("HipoHipo");
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -28,8 +27,6 @@ public class MenuManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
-            // Cargamos el puntaje del disco a la memoria, sin tocar la UI.
             currentScore = PlayerPrefs.GetInt(HappyKey, 0);
         }
     }
@@ -44,10 +41,8 @@ public class MenuManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Este método se ejecuta cada vez que una escena nueva se carga.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 1. Buscamos el objeto para el texto del score.
         GameObject scoreTextObject = GameObject.FindWithTag("ScoreText");
         if (scoreTextObject != null)
         {
@@ -59,15 +54,13 @@ public class MenuManager : MonoBehaviour
             scoreText = null;
         }
 
-        
         GameObject menuShowObject = GameObject.FindWithTag("PauseMenu");
         if (menuShowObject != null)
         {
             menuShow = menuShowObject;
-            
-            menuShow.SetActive(false); 
-            IsPress = false; 
-            Time.timeScale = 1f; 
+            menuShow.SetActive(false);
+            IsPress = false;
+            Time.timeScale = 1f;
         }
         else
         {
@@ -99,7 +92,6 @@ public class MenuManager : MonoBehaviour
 
     public void OpenMenu()
     {
-        
         if (menuShow != null)
         {
             menuShow.SetActive(true);
@@ -126,7 +118,39 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            OpenMenu(); 
+            OpenMenu();
+        }
+    }
+
+    
+    public void RequestSceneChange(string sceneName)
+    {
+        
+        if (SceneManager.GetActiveScene().name == "MiniPlay1")
+        {
+            
+            if (DanceController.Instance != null && DanceController.Instance.IsGameActive)
+            {
+                Debug.Log("No se puede cambiar de escena ahora, el minijuego está en curso.");
+                
+                return; 
+            }
+        }
+
+        
+        CloseMenu();
+
+        
+        var sceneChanger = FindObjectOfType<Script.ScenChanger.ChangeScene>();
+        if (sceneChanger != null)
+        {
+            sceneChanger.Change(sceneName);
+        }
+        else
+        {
+            
+            Debug.LogWarning("No se encontró el objeto ChangeScene, usando SceneManager.LoadScene directamente.");
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

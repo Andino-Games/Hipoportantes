@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 
 public class AudioMenuController : MonoBehaviour
 {
-    //En estos campos poner los objetos de UI
+    
     [SerializeField] private AudioMixer myMixer;
     [SerializeField] private Slider _musicSlider;
     [SerializeField] private Slider _sfxSlider;
@@ -38,31 +38,31 @@ public class AudioMenuController : MonoBehaviour
         SetMasterVolume();
     }
 
-    public void ToggleMusic() //llamar funcion en el OnClick del Boton
+    public void ToggleMusic() 
     {
         AudioManager.Instance.ToggleMusic();
     }
 
-    public void ToggleSFX() //llamar funcion en el OnClick del Boton
+    public void ToggleSFX() 
     {
         AudioManager.Instance.ToggleSFX();
     }
 
-    public void SetMusicVolume() //llamar funcion en el OnValueChange del objeto
+    public void SetMusicVolume() 
     {
     float volume = Mathf.Clamp(_musicSlider.value, 0.0001f, 1f);
     myMixer.SetFloat("Music", Mathf.Log10(volume) * 20);
     PlayerPrefs.SetFloat("musicVolume", _musicSlider.value);
     }
 
-    public void SetSFXVolume() //llamar funcion en el OnValueChange del objeto
+    public void SetSFXVolume() 
     {
     float volume = Mathf.Clamp(_sfxSlider.value, 0.0001f, 1f);
     myMixer.SetFloat("SFX", Mathf.Log10(volume) * 20);
     PlayerPrefs.SetFloat("sfxVolume", _sfxSlider.value);
     }
 
-    public void SetMasterVolume() //llamar funcion en el OnValueChange del objeto
+    public void SetMasterVolume() 
     {
     float volume = Mathf.Clamp(_masterSlider.value, 0.0001f, 1f);
     myMixer.SetFloat("Master", Mathf.Log10(volume) * 20);

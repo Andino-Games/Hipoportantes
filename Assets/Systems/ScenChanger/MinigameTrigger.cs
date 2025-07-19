@@ -1,30 +1,62 @@
-// MinigameTrigger.cs
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+[RequireComponent(typeof(Collider))]
 public class MinigameTrigger : MonoBehaviour
 {
-    [Tooltip("Escena a cargar.")]
+    [Header("Configuración de Escena")]
+    [Tooltip("El nombre de la escena del minijuego a cargar (ej. 'MiniPlay1').")]
     public string sceneNameToLoad;
 
-    [Tooltip("Nombre pantalla de carga.")]
-    public string loadingSceneName = "LoadScreen";
+    [Tooltip("El nombre de tu escena de pantalla de carga.")]
+    public string loadingSceneName = "LoadScreen"; 
 
-    [Tooltip("Activador de Trigger")]
+    [Header("Configuración del Trigger")]
+    [Tooltip("La etiqueta del objeto que puede activar este portal (ej. 'Player').")]
     public string activatingTag = "Player";
 
+    private bool isTransitioning = false;
+
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(activatingTag))
+        
+        if (other.CompareTag(activatingTag) && !isTransitioning)
         {
-            AudioManager.Instance.PlaySFX("Aseguren");
-            // 1. Guarda el nombre de la escena del minijuego en nuestro script estático.
+            
+            isTransitioning = true;
+
+            
+
+            
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopMusic();
+            }
+
+            
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX("Aseguren");
+            }
+
+            
             SceneData.SceneToLoad = sceneNameToLoad;
 
-            // 2. Carga la escena de la pantalla de carga.
-            Debug.Log("Iniciando carga para: " + sceneNameToLoad);
+           
+            Debug.Log($"Iniciando transición a la escena '{loadingSceneName}' para cargar '{sceneNameToLoad}'.");
             SceneManager.LoadScene(loadingSceneName);
-            AudioManager.Instance.PlaySFX("Cancion");
+        }
+    }
+
+    
+    private void OnValidate()
+    {
+        Collider col = GetComponent<Collider>();
+        if (col != null && !col.isTrigger)
+        {
+            Debug.LogWarning($"El Collider en el objeto '{gameObject.name}' debe tener 'Is Trigger' activado para que MinigameTrigger funcione.", this);
         }
     }
 }

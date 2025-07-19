@@ -1,4 +1,4 @@
-// LoadingScreenController.cs
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,7 +39,7 @@ public class LoadingScreen : MonoBehaviour
             
             if (operation.progress >= 0.9f)
             {
-                // (?) "Presiona para continuar" (?)
+                
                 
                 operation.allowSceneActivation = true;
             }

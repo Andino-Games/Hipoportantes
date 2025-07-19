@@ -1,4 +1,3 @@
-// LoadingScreenController.cs
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,33 +11,30 @@ public class LoadingScreenController : MonoBehaviour
 
     void Start()
     {
-        
         StartCoroutine(LoadSceneAsync());
-        
     }
 
     IEnumerator LoadSceneAsync()
     {
-        yield return new WaitForSeconds(2f);
+        
+        yield return new WaitForSeconds(0.5f);
+
+        
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneData.SceneToLoad);
         
         operation.allowSceneActivation = false;
 
         while (!operation.isDone)
         {
-            
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
             
             if (loadingBar != null)
             {
                 loadingBar.value = progress;
             }
-
             
             if (operation.progress >= 0.9f)
             {
-                // (?) "Presiona para continuar" (?)
-                
                 operation.allowSceneActivation = true;
             }
 

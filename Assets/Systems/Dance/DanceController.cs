@@ -1,183 +1,251 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 using Random = UnityEngine.Random;
 
 public class DanceController : MonoBehaviour
 {
     public static DanceController Instance;
-    
-    [SerializeField] private List<GameObject> arrows = new List<GameObject>();
-    [SerializeField] private List<GameObject> spriteGoodNotes = new List<GameObject>();
-    [SerializeField] private List<PlayableDirector> wrongNotes = new List<PlayableDirector>();
-    [SerializeField] private List<Transform> positionNotes = new List<Transform>();
-    
-    [SerializeField] private Transform leftSpawnPoint;
-    [SerializeField] private Transform rightSpawnPoint;
-    [SerializeField] private float leftMin,leftMax,rightMin,rightMax;
 
-    public AudioSource sound;
-    public bool isPlaying;
-    public TMP_Text scoreText, finalScore;
-    private int _score = 0, _noteCount = 0, _noteWrongCount = 0;
-    
-    [Header("Game Speed Settings")]
-    public float initialBeat = 30f; 
-    public float speedIncreaseAmount = 0.1f,speedDecraseAmount = 0.1f; 
+   
+    public bool IsGameActive { get; private set; }
+    // ---------------------------------
+
+    [Header("Game Configuration")]
+    [Tooltip("El ritmo inicial del juego. Afecta la velocidad de las flechas.")]
+    public float initialBeat = 60f;
+    [Tooltip("Segundos entre cada aumento de velocidad.")]
     public float timeBetweenSpeedIncreases = 10f;
-    
-    [Header("Spawn Settings")]
-    public float initialSpawnInterval = 1.5f;
-    public float minSpawnInterval = 0.5f; 
-    private float spawnTimer;
-    public float currentTempo { get; private set; } 
+    [Tooltip("Cuánto aumenta la velocidad cada vez.")]
+    public float speedIncreaseAmount = 0.1f;
 
+    [Header("Arrow Spawning")]
+    [Tooltip("Prefabs de las flechas. 0=Izquierda, 1=Derecha.")]
+    public GameObject[] arrows;
+    public Transform leftSpawnPoint;
+    public Transform rightSpawnPoint;
+    [Tooltip("Rango de aparición vertical para las flechas.")]
+    public float leftMin = -1f, leftMax = 1f;
+    public float rightMin = -1f, rightMax = 1f;
+    [Tooltip("Tiempo inicial entre la aparición de cada flecha.")]
+    public float initialSpawnInterval = 2f;
+    [Tooltip("El intervalo mínimo de aparición al que se puede llegar.")]
+    public float minSpawnInterval = 0.5f;
+    [Tooltip("Cuánto se reduce el intervalo de aparición en cada aumento de velocidad.")]
+    public float speedDecraseAmount = 0.1f;
+
+    [Header("UI & Feedback")]
+    public TMP_Text scoreText;
+    public TMP_Text finalScore;
+    public PlayableDirector finalScreen;
+    [Tooltip("Objetos a mostrar al final. 0=Ganar, 1=Perder.")]
+    public GameObject[] finalState;
+    public List<GameObject> spriteGoodNotes;
+    public List<Transform> positionNotes;
+    public List<PlayableDirector> wrongNotes;
+
+    [HideInInspector]
+    public float currentTempo;
+
+    private bool gameMusicStarted = false;
+    private int _score = 0;
+    private int _noteCount = 0;
+    private int _noteWrongCount = 0;
     private float timer;
-
-    [SerializeField] private PlayableDirector finalScreen;
-    [SerializeField] private GameObject[] finalState;
-
-    private bool activateTime;
-    private SignalReceiver _signalReceiver;
-    private int indexwrongNotes, wrongNote;
+    private float spawnTimer;
+    private int indexwrongNotes;
+    private int wrongNote;
 
     private void Awake()
     {
-        Instance = this;
-        _signalReceiver = GetComponent<SignalReceiver>();
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        
+        IsGameActive = false;
+
         currentTempo = initialBeat / 60f;
         timer = 0f;
         spawnTimer = 0f;
-        scoreText.text = _score.ToString();
+        if (scoreText != null)
+        {
+            scoreText.text = _score.ToString();
+        }
+    }
+
+    private void Start()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic("cancion", false);
+            gameMusicStarted = true;
+
+            // --- ¡AQUÍ ACTIVAMOS LA BANDERA! ---
+            // Justo cuando la música empieza, el juego se considera activo.
+            IsGameActive = true;
+        }
+        else
+        {
+            Debug.LogError("¡AudioManager no encontrado! La música del juego no puede iniciar.");
+        }
     }
 
     void Update()
     {
+        if (!gameMusicStarted) return;
+
+        HandleGameTimers();
+        HandleArrowSpawning();
+        CheckForGameEnd();
+    }
+
+    private void HandleGameTimers()
+    {
         timer += Time.deltaTime;
-        
         if (timer >= timeBetweenSpeedIncreases)
         {
             IncreaseGameSpeed();
             timer = 0f;
-            
         }
-        spawnTimer += Time.deltaTime;
+    }
 
-        if (spawnTimer >= initialSpawnInterval) 
+    private void HandleArrowSpawning()
+    {
+        spawnTimer += Time.deltaTime;
+        if (spawnTimer >= initialSpawnInterval)
         {
             if (Random.Range(0, 2) == 0)
             {
                 SpawnLeftArrow();
-              
             }
             else
             {
                 SpawnRightArrow();
             }
-            spawnTimer = 0f; 
+            spawnTimer = 0f;
         }
+    }
 
-        if (!isPlaying)
+    private void CheckForGameEnd()
+    {
+       
+        if (AudioManager.Instance != null && !AudioManager.Instance.musicSource.isPlaying && gameMusicStarted)
         {
-            sound.Play();
-            isPlaying = true;
+            EndGame();
         }
+    }
 
-        if (!sound.isPlaying && isPlaying)
+    private void EndGame()
+    {
+        
+        IsGameActive = false;
+
+        this.enabled = false;
+
+        if (MenuManager.Instance != null)
         {
             MenuManager.Instance.AddScore(_score);
-            GetComponent<Collider2D>().enabled = false;
-            finalScreen.Play();
-            finalScore.text = "Your Score: " + _score.ToString();
-            state();
-            Destroy(this);
         }
-       
+
+        var col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        if (finalScreen != null) finalScreen.Play();
+        if (finalScore != null) finalScore.text = "Your Score: " + _score.ToString();
+
+        state();
     }
+
     void IncreaseGameSpeed()
     {
-        currentTempo += speedIncreaseAmount; 
-        
+        currentTempo += speedIncreaseAmount;
         if (initialSpawnInterval > minSpawnInterval)
         {
-            initialSpawnInterval -= speedDecraseAmount; 
+            initialSpawnInterval -= speedDecraseAmount;
         }
-
-      
     }
 
-    void SpawnRightArrow()
+    public void SpawnRightArrow()
     {
         float randomYOffsetRight = Random.Range(rightMin, rightMax);
         Vector3 spawnPositionRight = rightSpawnPoint.position + new Vector3(0, randomYOffsetRight, 0);
         Instantiate(arrows[1], spawnPositionRight, Quaternion.identity);
-      
     }
 
     public void SpawnLeftArrow()
     {
         float randomYOffsetLeft = Random.Range(leftMin, leftMax);
         Vector3 spawnPositionLeft = leftSpawnPoint.position + new Vector3(0, randomYOffsetLeft, 0);
-        Instantiate(arrows[0], spawnPositionLeft, Quaternion.identity); 
+        Instantiate(arrows[0], spawnPositionLeft, Quaternion.identity);
     }
 
     public void GoodNote()
     {
         _noteCount++;
         _score++;
-        scoreText.text = _score.ToString();
+        if (scoreText != null) scoreText.text = _score.ToString();
 
         int notes = Random.Range(5, 10);
-        int goodNotes = Random.Range(0, spriteGoodNotes.Count);
-        int pointNotes = Random.Range(0,positionNotes.Count);
-        if (_noteCount >= notes)
+        if (_noteCount >= notes && spriteGoodNotes.Count > 0 && positionNotes.Count > 0)
         {
-           GameObject iconsObject = Instantiate(spriteGoodNotes[goodNotes], positionNotes[pointNotes].position, quaternion.identity);
-           Destroy(iconsObject,1.5f);
-           _noteCount = 0;
+            int goodNotesIndex = Random.Range(0, spriteGoodNotes.Count);
+            int pointNotesIndex = Random.Range(0, positionNotes.Count);
+            GameObject iconsObject = Instantiate(spriteGoodNotes[goodNotesIndex],
+                positionNotes[pointNotesIndex].position,
+                quaternion.identity);
+            Destroy(iconsObject, 1.5f);
+            _noteCount = 0;
         }
-        
     }
 
     public void MissedNote()
     {
         _noteWrongCount++;
-         indexwrongNotes = Random.Range(5, 10);
-         wrongNote = Random.Range(0, wrongNotes.Count);
+        indexwrongNotes = Random.Range(5, 10);
 
-        if (_noteWrongCount >= indexwrongNotes)
+        if (_noteWrongCount >= indexwrongNotes && wrongNotes.Count > 0)
         {
-            wrongNotes[wrongNote].Play();
-            _noteWrongCount = 0;
-            Time.timeScale = 0f;
-            
-            
+            wrongNote = Random.Range(0, wrongNotes.Count);
+            if (wrongNotes[wrongNote] != null)
+            {
+                wrongNotes[wrongNote].Play();
+                _noteWrongCount = 0;
+                Time.timeScale = 0f;
+            }
         }
         Debug.Log("Error en la note");
-        
-       
     }
 
     public void StopTimeline()
     {
-        wrongNotes[wrongNote].Stop();
+        if (wrongNotes.Count > 0 && wrongNote < wrongNotes.Count && wrongNotes[wrongNote] != null)
+        {
+            wrongNotes[wrongNote].Stop();
+        }
         Time.timeScale = 1f;
-
     }
+
     public void state()
     {
-        if (_score >= 50) 
+        if (finalState == null || finalState.Length < 2) return;
+
+        if (_score >= 50)
         {
-            finalState[0].SetActive(true);
+            if (finalState[0] != null) finalState[0].SetActive(true);
         }
         else
         {
-            finalState[1].SetActive(true);
+            if (finalState[1] != null) finalState[1].SetActive(true);
         }
     }
 }

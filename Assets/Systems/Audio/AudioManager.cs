@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -8,6 +6,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     public Sound[] musicSounds, sfxSounds;
+    
     public AudioSource musicSource, sfxSource;
 
 
@@ -24,24 +23,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        PlayMusic("");
-    }
-    public void PlayMusic(string name)
+    
+    public void PlayMusic(string name, bool loop = true)
     {
         Sound s = Array.Find(musicSounds, x => x.name == name);
 
         if (s == null)
         {
-            Debug.Log("Sound Not Found");
+            Debug.LogWarning("AudioManager: Sonido de música no encontrado: " + name);
         }
-
         else
         {
             musicSource.clip = s.clip;
+            musicSource.loop = loop; // Aplicamos si debe ser loopeable
             musicSource.Play();
         }
+    }
+
+    
+    public void StopMusic()
+    {
+        musicSource.Stop();
     }
 
     public void PlaySFX(string name)
@@ -50,16 +52,15 @@ public class AudioManager : MonoBehaviour
 
         if (s == null)
         {
-            Debug.Log("Sound Not Found");
+            Debug.LogWarning("AudioManager: SFX no encontrado: " + name);
         }
-
         else
         {
             sfxSource.PlayOneShot(s.clip);
         }
     }
 
-    //UI Sound Controls
+    
     public void ToggleMusic()
     {
         musicSource.mute = !musicSource.mute;
@@ -68,31 +69,4 @@ public class AudioManager : MonoBehaviour
     {
         sfxSource.mute = !sfxSource.mute;
     }
-   
-
-
-
-
-
-
-
-
-
-
-
-    //public void MusicVolume(float volume)
-    //{
-    //musicSource.volume = volume;
-    //}
-    // public void SFXVolume(float volume)
-    // {
-    // sfxSource.volume = volume;
-    //}
-
-    //To call the PlaySfx
-    //AudioManager.Instance.PlaySFX("Nombre del SFX");
-
-    //To stop music
-    //AudioManager.Instance.musicSource.stop();
-
 }
