@@ -1,11 +1,6 @@
-
-
-
-
-using System;
-using System.Security.Cryptography;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -13,11 +8,15 @@ public class MenuManager : MonoBehaviour
     private const string HappyKey = "Happinest";
 
     private int currentScore = 0;
-    public TMP_Text scoreText;
+
+    [Header("UI References")]
+    public TMP_Text scoreText; 
     public GameObject menuShow;
     public SpriteRenderer pauseButton;
 
+    [HideInInspector]
     public bool IsPress;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,15 +27,66 @@ public class MenuManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // Cargamos el puntaje del disco a la memoria, sin tocar la UI.
+            currentScore = PlayerPrefs.GetInt(HappyKey, 0);
         }
-        LoadScore();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Este método se ejecuta cada vez que una escena nueva se carga.
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 1. Buscamos el objeto para el texto del score.
+        GameObject scoreTextObject = GameObject.FindWithTag("ScoreText");
+        if (scoreTextObject != null)
+        {
+            scoreText = scoreTextObject.GetComponent<TMP_Text>();
+            UpdateScoreUI();
+        }
+        else
+        {
+            scoreText = null;
+        }
+
+        // 2. Buscamos el objeto para el menú de pausa.
+        GameObject menuShowObject = GameObject.FindWithTag("PauseMenu");
+        if (menuShowObject != null)
+        {
+            menuShow = menuShowObject;
+            // Nos aseguramos de que el menú de pausa siempre comience cerrado.
+            menuShow.SetActive(false); 
+            IsPress = false; // Reseteamos el estado del botón de pausa.
+            Time.timeScale = 1f; // Nos aseguramos que el tiempo corra normalmente.
+        }
+        else
+        {
+            menuShow = null;
+        }
     }
 
     public void AddScore(int amount)
     {
         currentScore += amount;
-        scoreText.text = currentScore.ToString();
+        UpdateScoreUI();
         SaveScore();
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = currentScore.ToString();
+        }
     }
 
     private void SaveScore()
@@ -46,27 +96,25 @@ public class MenuManager : MonoBehaviour
         Debug.Log("Guardando score" + currentScore);
     }
 
-    private void LoadScore()
-    {
-        currentScore = PlayerPrefs.GetInt(HappyKey, 0);
-        scoreText.text = currentScore.ToString();
-        Debug.Log("Cargando Score" + currentScore);
-    }
-
     public void OpenMenu()
     {
-        menuShow.gameObject.SetActive(true);
-        // pauseButton = menu;
-        IsPress = true;
-        Time.timeScale = 0f;
+        // El null-check es una buena práctica por si esta función se llama en una escena sin menú.
+        if (menuShow != null)
+        {
+            menuShow.SetActive(true);
+            IsPress = true;
+            Time.timeScale = 0f;
+        }
     }
 
     public void CloseMenu()
     {
-        menuShow.gameObject.SetActive(false);
-        // pauseButton = menu;
-        IsPress = false;
-        Time.timeScale = 1f;
+        if (menuShow != null)
+        {
+            menuShow.SetActive(false);
+            IsPress = false;
+            Time.timeScale = 1f;
+        }
     }
 
     public void TooglePuse()
@@ -74,14 +122,10 @@ public class MenuManager : MonoBehaviour
         if (IsPress)
         {
             CloseMenu();
-           
-          
         }
         else
         {
             OpenMenu(); 
         }
     }
-    
-
 }

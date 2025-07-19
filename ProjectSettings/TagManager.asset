@@ -8,6 +8,7 @@ TagManager:
   - ArrowLeft
   - ArrowRight
   - End
+  - ScoreText
   layers:
   - Default
   - TransparentFX
