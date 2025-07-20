@@ -1,7 +1,7 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 
 public class MenuManager : MonoBehaviour
 {
@@ -10,12 +10,10 @@ public class MenuManager : MonoBehaviour
 
     private float currentScore = 0;
 
-    [Header("UI References")]
-    public TMP_Text scoreText;
-
-    public Image happyBar;
+    [Header("UI References")] 
+    public Image happyBar,totalEmotions;
     public GameObject menuShow;
-    public SpriteRenderer pauseButton;
+    
 
     [HideInInspector]
     public bool IsPress;
@@ -33,7 +31,7 @@ public class MenuManager : MonoBehaviour
             currentScore = PlayerPrefs.GetFloat(HappyKey, 0);
             if (happyBar != null)
             {
-                happyBar.fillAmount = currentScore;
+                UpdateScoreUI();
             }
         }
     }
@@ -50,18 +48,7 @@ public class MenuManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        GameObject scoreTextObject = GameObject.FindWithTag("ScoreText");
-        if (scoreTextObject != null)
-        {
-            scoreText = scoreTextObject.GetComponent<TMP_Text>();
-            UpdateScoreUI();
-        }
-        else
-        {
-            scoreText = null;
-        }
-
-        GameObject menuShowObject = GameObject.FindWithTag("PauseMenu");
+        GameObject menuShowObject = GameObject.FindWithTag("MenuPause");
         if (menuShowObject != null)
         {
             menuShow = menuShowObject;
@@ -78,18 +65,15 @@ public class MenuManager : MonoBehaviour
     public void AddScore(float amount)
     {
         currentScore += amount;
-        
         UpdateScoreUI();
         SaveScore();
     }
 
     private void UpdateScoreUI()
     {
-        if (scoreText != null)
-        {
-            scoreText.text = currentScore.ToString();
-            happyBar.fillAmount = currentScore;
-        }
+        happyBar.fillAmount = currentScore / 20f;
+        float emotions = currentScore / 200f;
+        totalEmotions.fillAmount = emotions;
     }
 
     private void SaveScore()

@@ -351,6 +351,17 @@ MonoBehaviour:
   sceneNameToLoad: MiniPlay1
   loadingSceneName: LoadScene
   activatingTag: Player
+--- !u!114 &144981813 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2038248545900581100, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+  m_PrefabInstance: {fileID: 2127799023}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &272874948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1066,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1170203328 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7295394635279420522, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+  m_PrefabInstance: {fileID: 2127799023}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1487213248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1207,9 +1229,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1717304953376616939, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987286123212837429, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1990749928400589723, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 4294967295
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2965453725624280616, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149465109951770041, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4941651895722173467, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
       propertyPath: m_Pivot.x
@@ -1304,13 +1342,41 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5703291264864233114, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5703291264864233114, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
       propertyPath: m_UpdateRectTransformForStandalone
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7295394635279420522, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_Type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7295394635279420522, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7295394635279420522, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_FillMethod
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486522711006423751, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: happyBar
+      value: 
+      objectReference: {fileID: 144981813}
+    - target: {fileID: 7486522711006423751, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: totalEmotions
+      value: 
+      objectReference: {fileID: 1170203328}
     - target: {fileID: 7950876615008920023, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
       propertyPath: m_Name
       value: MenuManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8567526644611629035, guid: 42207b5730f9cd24e82b7ff7ad784677, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5584cd8f321bbc744a0bb8441e6ded20, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

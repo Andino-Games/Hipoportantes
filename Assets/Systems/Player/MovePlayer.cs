@@ -38,18 +38,90 @@ public class MovePlayer : MonoBehaviour
 
     void Update()
     {
-    // Lógica para el Puntero Táctil (la dejamos como la tienes)
-        switch (stateControl)
+        PcInput();
+  
+    }
+    
+    public void PcInput()
+    {
+        if (Input.GetMouseButton(0))
         {
-            case InputType.Mobile:
-                Celular();
-                break;
-            case InputType.PC:
-                InputPc();
-                break;
-             
-                
+            // Check if the mouse is over a UI element
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                if (touchPointerUI != null)
+                    touchPointerUI.gameObject.SetActive(false);
+                return;
+            }
+
+            // Show and position the UI pointer
+            if (touchPointerUI != null)
+            {
+                touchPointerUI.gameObject.SetActive(true);
+                touchPointerUI.rectTransform.position = Input.mousePosition;
+            }
+
+            // Raycast from mouse position
+            Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, touchLayer))
+            {
+                // Set the target position, keeping the player's original Y
+                currentPosition = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            }
+            if (Vector3.Distance(transform.position, currentPosition) > 0.01f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, currentPosition, moveSpeed * Time.deltaTime);
+                if (touchPointerUI != null && movingPointerSprite != null)
+                    touchPointerUI.sprite = movingPointerSprite;
+            }
+            else
+            {
+                if (touchPointerUI != null && defaultPointerSprite != null)
+                    touchPointerUI.sprite = defaultPointerSprite;
+            }
         }
+        else
+        {
+            // When mouse button is released, hide the pointer
+            if (touchPointerUI != null)
+                touchPointerUI.gameObject.SetActive(false);
+        }
+    }
+
+    public void MobileInput()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            {
+                if (touchPointerUI != null)
+                    touchPointerUI.gameObject.SetActive(false);
+                return;
+            }
+
+            if (touchPointerUI != null)
+            {
+                touchPointerUI.gameObject.SetActive(true);
+                touchPointerUI.rectTransform.position = touch.position;
+            }
+
+            Ray ray = _cam.ScreenPointToRay(touch.position);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, touchLayer))
+            {
+                currentPosition =
+                    new Vector3(hit.point.x, transform.position.y, hit.point.z); // Mantenemos la Y original
+            }
+
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                if (touchPointerUI != null)
+                    touchPointerUI.gameObject.SetActive(false);
+            }
+        }
+
         // Mover el personaje
         if (Vector3.Distance(transform.position, currentPosition) > 0.01f)
         {
@@ -61,61 +133,6 @@ public class MovePlayer : MonoBehaviour
         {
             if (touchPointerUI != null && defaultPointerSprite != null)
                 touchPointerUI.sprite = defaultPointerSprite;
-        }
-   }
-
-    public void Celular()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            HandlePointerInput(touch.position, touch.fingerId, touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled);
-      
-        }
-    
-       
-    }
-
-    private void InputPc()
-    {
-        if (Input.GetMouseButton(0)) 
-        {
-            HandlePointerInput(Input.mousePosition, -1, false); 
-        }
-        
-        else if (Input.GetMouseButtonUp(0)) 
-        {
-            HandlePointerInput(Input.mousePosition, -1, true);
-        }
-    }
-    private void HandlePointerInput(Vector3 screenPosition, int pointerId, bool endedOrCanceled)
-    {
-        if (EventSystem.current.IsPointerOverGameObject(pointerId))
-        {
-            if (touchPointerUI != null)
-                touchPointerUI.gameObject.SetActive(false);
-            return;
-        }
-
-        // Mostrar y posicionar el puntero UI
-        if (touchPointerUI != null)
-        {
-            touchPointerUI.gameObject.SetActive(true);
-            touchPointerUI.rectTransform.position = screenPosition;
-        }
-
-        // Calcular la posición de destino
-        Ray ray = _cam.ScreenPointToRay(screenPosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, touchLayer))
-        {
-            currentPosition = new Vector3(hit.point.x, transform.position.y, hit.point.z); // Mantenemos la Y original
-        }
-        
-        if (endedOrCanceled)
-        {
-            if (touchPointerUI != null)
-                touchPointerUI.gameObject.SetActive(false);
         }
     }
 }
