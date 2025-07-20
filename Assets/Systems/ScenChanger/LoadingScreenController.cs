@@ -9,6 +9,8 @@ public class LoadingScreenController : MonoBehaviour
     [Tooltip("La barra de carga que se actualizará.")]
     public Slider loadingBar;
 
+    public float timeToChange;
+
     void Start()
     {
         StartCoroutine(LoadSceneAsync());
@@ -17,7 +19,7 @@ public class LoadingScreenController : MonoBehaviour
     IEnumerator LoadSceneAsync()
     {
         
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(timeToChange);
 
         
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneData.SceneToLoad);

@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingBar: {fileID: 36948188}
+  timeToChange: 8
 --- !u!4 &540486078
 Transform:
   m_ObjectHideFlags: 0

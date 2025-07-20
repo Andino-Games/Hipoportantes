@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2474150769616178078}
   - component: {fileID: 568254584563807572}
   - component: {fileID: 2569794376930420238}
-  - component: {fileID: 5119540310232013929}
+  - component: {fileID: 8399031876824566702}
   m_Layer: 0
   m_Name: ArrowRight
   m_TagString: Arrow
@@ -103,8 +103,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beatTempo: 30
   NoMoreArrows: 0
---- !u!61 &5119540310232013929
-BoxCollider2D:
+--- !u!58 &8399031876824566702
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -138,14 +138,4 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0.38, y: 0.38, z: 0.38, w: 0.39}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.24, y: 2.16}
-    newSize: {x: 0.53, y: 0.52}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.53, y: 0.52}
-  m_EdgeRadius: 0
+  m_Radius: 1.12

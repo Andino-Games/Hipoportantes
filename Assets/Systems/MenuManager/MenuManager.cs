@@ -1,16 +1,19 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance { get; private set; }
     private const string HappyKey = "Happinest";
 
-    private int currentScore = 0;
+    private float currentScore = 0;
 
     [Header("UI References")]
     public TMP_Text scoreText;
+
+    public Image happyBar;
     public GameObject menuShow;
     public SpriteRenderer pauseButton;
 
@@ -27,7 +30,11 @@ public class MenuManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            currentScore = PlayerPrefs.GetInt(HappyKey, 0);
+            currentScore = PlayerPrefs.GetFloat(HappyKey, 0);
+            if (happyBar != null)
+            {
+                happyBar.fillAmount = currentScore;
+            }
         }
     }
 
@@ -68,9 +75,10 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void AddScore(int amount)
+    public void AddScore(float amount)
     {
         currentScore += amount;
+        
         UpdateScoreUI();
         SaveScore();
     }
@@ -80,12 +88,13 @@ public class MenuManager : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = currentScore.ToString();
+            happyBar.fillAmount = currentScore;
         }
     }
 
     private void SaveScore()
     {
-        PlayerPrefs.SetInt(HappyKey, currentScore);
+        PlayerPrefs.SetFloat(HappyKey, currentScore);
         PlayerPrefs.Save();
         Debug.Log("Guardando score" + currentScore);
     }

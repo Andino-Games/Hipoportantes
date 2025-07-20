@@ -4,6 +4,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class DanceController : MonoBehaviour
@@ -39,7 +40,7 @@ public class DanceController : MonoBehaviour
 
     [Header("UI & Feedback")]
     public TMP_Text scoreText;
-    public TMP_Text finalScore;
+    public Image HappyBar;
     public PlayableDirector finalScreen;
     [Tooltip("Objetos a mostrar al final. 0=Ganar, 1=Perder.")]
     public GameObject[] finalState;
@@ -51,7 +52,7 @@ public class DanceController : MonoBehaviour
     public float currentTempo;
 
     private bool gameMusicStarted = false;
-    private int _score = 0;
+    private float _score = 0;
     private int _noteCount = 0;
     private int _noteWrongCount = 0;
     private float timer;
@@ -161,7 +162,7 @@ public class DanceController : MonoBehaviour
         if (col != null) col.enabled = false;
 
         if (finalScreen != null) finalScreen.Play();
-        if (finalScore != null) finalScore.text = "Your Score: " + _score.ToString();
+        
 
         state();
     }
@@ -189,13 +190,18 @@ public class DanceController : MonoBehaviour
         Instantiate(arrows[0], spawnPositionLeft, Quaternion.identity);
     }
 
+    
+
     public void GoodNote()
     {
         _noteCount++;
         _score++;
         if (scoreText != null) scoreText.text = _score.ToString();
-
-        int notes = Random.Range(5, 10);
+        
+        float bar = _score / 22f ;
+        HappyBar.fillAmount = bar ;
+        
+        int notes = Random.Range(3, 6);
         if (_noteCount >= notes && spriteGoodNotes.Count > 0 && positionNotes.Count > 0)
         {
             int goodNotesIndex = Random.Range(0, spriteGoodNotes.Count);
@@ -206,12 +212,13 @@ public class DanceController : MonoBehaviour
             Destroy(iconsObject, 1.5f);
             _noteCount = 0;
         }
+        Debug.Log("GoodNotes"+ _noteCount);
     }
 
     public void MissedNote()
     {
         _noteWrongCount++;
-        indexwrongNotes = Random.Range(5, 10);
+        indexwrongNotes = Random.Range(3, 6);
 
         if (_noteWrongCount >= indexwrongNotes && wrongNotes.Count > 0)
         {
@@ -239,7 +246,7 @@ public class DanceController : MonoBehaviour
     {
         if (finalState == null || finalState.Length < 2) return;
 
-        if (_score >= 50)
+        if (_score >= 10)
         {
             if (finalState[0] != null) finalState[0].SetActive(true);
         }
