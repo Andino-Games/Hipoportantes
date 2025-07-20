@@ -12,7 +12,14 @@ public class MenuManager : MonoBehaviour
 
     [Header("UI References")] 
     public Image happyBar,totalEmotions;
-    public GameObject menuShow;
+    public GameObject menuShow; 
+
+    
+    [Header("Main Menu Panels")]
+    [Tooltip("Arrastra aquí el panel que contiene los botones principales (Jugar, Opciones, Salir).")]
+    public GameObject mainMenuPanel;
+    [Tooltip("Arrastra aquí el panel de Opciones que está desactivado.")]
+    public GameObject optionsPanel;
     
 
     [HideInInspector]
@@ -71,9 +78,12 @@ public class MenuManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        happyBar.fillAmount = currentScore / 20f;
-        float emotions = currentScore / 200f;
-        totalEmotions.fillAmount = emotions;
+        if(happyBar != null) happyBar.fillAmount = currentScore / 20f;
+        if(totalEmotions != null)
+        {
+            float emotions = currentScore / 200f;
+            totalEmotions.fillAmount = emotions;
+        }
     }
 
     private void SaveScore()
@@ -118,21 +128,16 @@ public class MenuManager : MonoBehaviour
     
     public void RequestSceneChange(string sceneName)
     {
-        
         if (SceneManager.GetActiveScene().name == "MiniPlay1")
         {
-            
             if (DanceController.Instance != null && DanceController.Instance.IsGameActive)
             {
                 Debug.Log("No se puede cambiar de escena ahora, el minijuego está en curso.");
-                
                 return; 
             }
         }
-
         
         CloseMenu();
-
         
         var sceneChanger = FindObjectOfType<Script.ScenChanger.ChangeScene>();
         if (sceneChanger != null)
@@ -141,9 +146,37 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            
             Debug.LogWarning("No se encontró el objeto ChangeScene, usando SceneManager.LoadScene directamente.");
             SceneManager.LoadScene(sceneName);
         }
     }
+
+    
+    public void OpenOptionsPanel()
+    {
+        if (optionsPanel != null) optionsPanel.SetActive(true);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+    }
+
+    
+    public void CloseOptionsPanel()
+    {
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+    }
+   
+    
+    public void QuitApplication()
+    {
+        Debug.Log("Saliendo de la aplicación...");
+
+        
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+
+        
+        Application.Quit();
+    }
+   
 }
