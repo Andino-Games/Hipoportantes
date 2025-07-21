@@ -11,9 +11,7 @@ public class MovePlayer : MonoBehaviour
     }
     private Camera _cam;
     private Vector3 currentPosition;
-    private Animator _animator;
-    private SpriteRenderer _spriteRenderer;
-    private Vector3 _lastPosition;
+ 
     [SerializeField] private float moveSpeed;
     [SerializeField] private LayerMask touchLayer;
     [SerializeField] private Image touchPointerUI;
@@ -26,9 +24,7 @@ public class MovePlayer : MonoBehaviour
     {
         _cam = Camera.main;
         currentPosition = transform.position;
-        _animator = GetComponent<Animator>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _lastPosition = transform.position;
+       
 
         if (touchPointerUI != null)
         {
@@ -38,7 +34,7 @@ public class MovePlayer : MonoBehaviour
 
     void Update()
     {
-        PcInput();
+        MobileInput();
   
     }
     
