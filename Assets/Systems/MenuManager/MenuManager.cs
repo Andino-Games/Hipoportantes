@@ -17,7 +17,7 @@ public class MenuManager : MonoBehaviour
     
     [Header("Main Menu Panels")]
     [Tooltip("Arrastra aquí el panel que contiene los botones principales (Jugar, Opciones, Salir).")]
-    public GameObject mainMenuPanel;
+    public GameObject mainMenuPanel, stopemotions;
     [Tooltip("Arrastra aquí el panel de Opciones que está desactivado.")]
     public GameObject optionsPanel;
     
@@ -98,6 +98,7 @@ public class MenuManager : MonoBehaviour
         if (menuShow != null)
         {
             menuShow.SetActive(true);
+            stopemotions.SetActive(false);
             IsPress = true;
             Time.timeScale = 0f;
         }
@@ -108,6 +109,7 @@ public class MenuManager : MonoBehaviour
         if (menuShow != null)
         {
             menuShow.SetActive(false);
+            stopemotions.SetActive(true);
             IsPress = false;
             Time.timeScale = 1f;
         }
