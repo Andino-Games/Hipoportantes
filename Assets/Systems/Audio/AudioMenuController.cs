@@ -9,8 +9,8 @@ public class AudioMenuController : MonoBehaviour
     
     [SerializeField] private AudioMixer myMixer;
     [SerializeField] private Slider _musicSlider;
-    [SerializeField] private Slider _sfxSlider;
-    [SerializeField] private Slider _masterSlider;
+    // [SerializeField] private Slider _sfxSlider;
+    // [SerializeField] private Slider _masterSlider;
 
 
     private void Start()
@@ -31,8 +31,8 @@ public class AudioMenuController : MonoBehaviour
     private void LoadVolume()
     {
         _musicSlider.value = PlayerPrefs.GetFloat("musicVolume");
-        _sfxSlider.value = PlayerPrefs.GetFloat("sfxVolume");
-        _masterSlider.value = PlayerPrefs.GetFloat("masterVolume");
+        // _sfxSlider.value = PlayerPrefs.GetFloat("sfxVolume");
+        // _masterSlider.value = PlayerPrefs.GetFloat("masterVolume");
         SetMusicVolume();
         SetSFXVolume();
         SetMasterVolume();
@@ -57,16 +57,16 @@ public class AudioMenuController : MonoBehaviour
 
     public void SetSFXVolume() 
     {
-    float volume = Mathf.Clamp(_sfxSlider.value, 0.0001f, 1f);
-    myMixer.SetFloat("SFX", Mathf.Log10(volume) * 20);
-    PlayerPrefs.SetFloat("sfxVolume", _sfxSlider.value);
+    // float volume = Mathf.Clamp(_sfxSlider.value, 0.0001f, 1f);
+    // myMixer.SetFloat("SFX", Mathf.Log10(volume) * 20);
+    // PlayerPrefs.SetFloat("sfxVolume", _sfxSlider.value);
     }
 
     public void SetMasterVolume() 
     {
-    float volume = Mathf.Clamp(_masterSlider.value, 0.0001f, 1f);
-    myMixer.SetFloat("Master", Mathf.Log10(volume) * 20);
-    PlayerPrefs.SetFloat("masterVolume", _masterSlider.value);
+    // float volume = Mathf.Clamp(_masterSlider.value, 0.0001f, 1f);
+    // myMixer.SetFloat("Master", Mathf.Log10(volume) * 20);
+    // PlayerPrefs.SetFloat("masterVolume", _masterSlider.value);
     }
 
 

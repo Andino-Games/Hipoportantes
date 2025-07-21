@@ -19,7 +19,7 @@ public class MenuManager : MonoBehaviour
     [Tooltip("Arrastra aquí el panel que contiene los botones principales (Jugar, Opciones, Salir).")]
     public GameObject mainMenuPanel;
     [Tooltip("Arrastra aquí el panel de Opciones que está desactivado.")]
-    public GameObject optionsPanel;
+    public GameObject optionsPanel,StopPanelEmotions;
     
 
     [HideInInspector]
@@ -43,31 +43,31 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        GameObject menuShowObject = GameObject.FindWithTag("MenuPause");
-        if (menuShowObject != null)
-        {
-            menuShow = menuShowObject;
-            menuShow.SetActive(false);
-            IsPress = false;
-            Time.timeScale = 1f;
-        }
-        else
-        {
-            menuShow = null;
-        }
-    }
+    // private void OnEnable()
+    // {
+    //     SceneManager.sceneLoaded += OnSceneLoaded;
+    // }
+    //
+    // private void OnDisable()
+    // {
+    //     SceneManager.sceneLoaded -= OnSceneLoaded;
+    // }
+    //
+    // void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // {
+    //     GameObject menuShowObject = GameObject.FindWithTag("MenuPause");
+    //     if (menuShowObject != null)
+    //     {
+    //         menuShow = menuShowObject;
+    //         menuShow.SetActive(false);
+    //         IsPress = false;
+    //         Time.timeScale = 1f;
+    //     }
+    //     else
+    //     {
+    //         menuShow = null;
+    //     }
+    // }
 
     public void AddScore(float amount)
     {
@@ -98,6 +98,7 @@ public class MenuManager : MonoBehaviour
         if (menuShow != null)
         {
             menuShow.SetActive(true);
+            StopPanelEmotions.SetActive(false);
             IsPress = true;
             Time.timeScale = 0f;
         }
@@ -108,6 +109,7 @@ public class MenuManager : MonoBehaviour
         if (menuShow != null)
         {
             menuShow.SetActive(false);
+            StopPanelEmotions.SetActive(true);
             IsPress = false;
             Time.timeScale = 1f;
         }
